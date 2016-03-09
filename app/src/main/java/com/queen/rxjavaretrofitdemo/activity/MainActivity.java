@@ -7,23 +7,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.queen.rxjavaretrofitdemo.R;
-import com.queen.rxjavaretrofitdemo.entity.MovieEntity;
+import com.queen.rxjavaretrofitdemo.entity.HttpResult;
+import com.queen.rxjavaretrofitdemo.entity.Subject;
 import com.queen.rxjavaretrofitdemo.http.HttpMethods;
-import com.queen.rxjavaretrofitdemo.http.MovieService;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -89,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 //                        resultTV.setText(movieEntity.toString());
 //                    }
 //                });
-        subscriber = new Subscriber<MovieEntity>() {
+        subscriber = new Subscriber<HttpResult<List<Subject>>>() {
             @Override
             public void onCompleted() {
                 Toast.makeText(MainActivity.this, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
@@ -101,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNext(MovieEntity movieEntity) {
+            public void onNext(HttpResult<List<Subject>> movieEntity) {
                 resultTV.setText(movieEntity.toString());
             }
         };

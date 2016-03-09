@@ -1,6 +1,7 @@
 package com.queen.rxjavaretrofitdemo.http;
 
-import com.queen.rxjavaretrofitdemo.entity.MovieEntity;
+import com.queen.rxjavaretrofitdemo.entity.HttpResult;
+import com.queen.rxjavaretrofitdemo.entity.Subject;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -9,10 +10,8 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -59,7 +58,7 @@ public class HttpMethods {
      * @param start 起始位置
      * @param count 获取长度
      */
-    public void getTopMovie(Subscriber<MovieEntity> subscriber, int start, int count){
+    public void getTopMovie(Subscriber<HttpResult<List<Subject>>> subscriber, int start, int count){
         movieService.getTopMovie(start, count)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

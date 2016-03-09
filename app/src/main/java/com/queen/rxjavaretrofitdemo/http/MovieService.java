@@ -1,8 +1,10 @@
 package com.queen.rxjavaretrofitdemo.http;
 
-import com.queen.rxjavaretrofitdemo.entity.MovieEntity;
+import com.queen.rxjavaretrofitdemo.entity.HttpResult;
+import com.queen.rxjavaretrofitdemo.entity.Subject;
 
-import retrofit2.Call;
+import java.util.List;
+
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -15,6 +17,9 @@ public interface MovieService {
 //    @GET("top250")
 //    Call<MovieEntity> getTopMovie(@Query("start") int start, @Query("count") int count);
 
+//    @GET("top250")
+//    Observable<MovieEntity> getTopMovie(@Query("start") int start, @Query("count") int count);
+
     @GET("top250")
-    Observable<MovieEntity> getTopMovie(@Query("start") int start, @Query("count") int count);
+    Observable<HttpResult<List<Subject>>> getTopMovie(@Query("start") int start, @Query("count") int count);
 }
