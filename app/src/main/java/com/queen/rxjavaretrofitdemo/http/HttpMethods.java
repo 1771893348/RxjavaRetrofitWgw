@@ -74,6 +74,12 @@ public class HttpMethods {
                 .subscribe(subscriber);
     }
 
+    /**
+     * 用来统一处理Http的ResultCode
+     * @param result   Http请求返回的数据，用过HttpResult进行了封装
+     * @param <T>   Subscriber真正需要的数据类型，也就是Data部分的数据类型
+     * @return
+     */
     static <T> Observable<T> flatResult(final HttpResult<T> result) {
         return Observable.create(new Observable.OnSubscribe<T>() {
             @Override
