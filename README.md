@@ -1,7 +1,5 @@
 #RxJava与Retrofit结合时产生的一些体位
 
-@(2014年计划)[RxJava][Retrofit]
-
 
 ## 前言
 RxJava和Retrofit也火了一段时间了，不过最近一直在学习ReactNative和Node相关的姿势，一直没有时间研究这些新东西，最近有个项目准备写，打算先用Android写一个Demo出来，却发现Android的世界发生了天翻地覆的变化，EventBus和OKHttp啥的都不见了，RxJava和Retrofit是什么鬼？
