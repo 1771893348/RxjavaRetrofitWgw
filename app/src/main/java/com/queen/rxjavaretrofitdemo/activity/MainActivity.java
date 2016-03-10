@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 //                        resultTV.setText(movieEntity.toString());
 //                    }
 //                });
-        subscriber = new Subscriber<HttpResult<List<Subject>>>() {
+        subscriber = new Subscriber<List<Subject>>() {
             @Override
             public void onCompleted() {
                 Toast.makeText(MainActivity.this, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNext(HttpResult<List<Subject>> movieEntity) {
+            public void onNext(List<Subject> movieEntity) {
                 resultTV.setText(movieEntity.toString());
             }
         };

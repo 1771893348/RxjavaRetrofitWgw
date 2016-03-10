@@ -10,8 +10,10 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -58,11 +60,33 @@ public class HttpMethods {
      * @param start 起始位置
      * @param count 获取长度
      */
-    public void getTopMovie(Subscriber<HttpResult<List<Subject>>> subscriber, int start, int count){
+    public void getTopMovie(Subscriber<List<Subject>> subscriber, int start, int count){
         movieService.getTopMovie(start, count)
+                .flatMap(new Func1<HttpResult<List<Subject>>, Observable<List<Subject>>>() {
+                    @Override
+                    public Observable<List<Subject>> call(HttpResult<List<Subject>> httpResult) {
+                        return flatResult(httpResult);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
+    }
+
+    static <T> Observable<T> flatResult(final HttpResult<T> result) {
+        return Observable.create(new Observable.OnSubscribe<T>() {
+            @Override
+            public void call(Subscriber<? super T> subscriber) {
+
+                if (result.getCount() == 0) {
+                    subscriber.onError(new ApiException(ApiException.USER_NOT_EXIST));
+                } else{
+                    subscriber.onNext(result.getSubjects());
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 }
