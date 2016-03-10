@@ -868,5 +868,10 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressCanc
 
 现在我们在写一个新的网络请求，只需要在**Service**里面写一个方法，注意泛型，然后在创建一个**SubscriberOnNextListener**处理请求数据就可以了。
 
+如需查看项目代码 --> 代码地址:
+> https://github.com/tough1985/RxjavaRetrofitDemo
+
+选择Tag -> step7
+
 希望你用新体位能够享受到新的高潮。
 
