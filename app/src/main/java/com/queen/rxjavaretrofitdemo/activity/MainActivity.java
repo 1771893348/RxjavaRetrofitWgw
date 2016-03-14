@@ -24,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.result_TV)
     TextView resultTV;
 
-//    private Subscriber subscriber;
-
     private SubscriberOnNextListener getTopMovieOnNext;
 
     @Override
@@ -61,65 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
     //进行网络请求
     private void getMovie(){
-//        String baseUrl = "https://api.douban.com/v2/movie/";
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(baseUrl)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-//                .build();
-//
-//        MovieService movieService = retrofit.create(MovieService.class);
-//        Call<MovieEntity> call = movieService.getTopMovie(0, 10);
-//        call.enqueue(new Callback<MovieEntity>() {
-//            @Override
-//            public void onResponse(Call<MovieEntity> call, Response<MovieEntity> response) {
-//                resultTV.setText(response.body().toString());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<MovieEntity> call, Throwable t) {
-//                resultTV.setText(t.getMessage());
-//            }
-//        });
-
-//        movieService.getTopMovie(0, 10)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<MovieEntity>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        Toast.makeText(MainActivity.this, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        resultTV.setText(e.getMessage());
-//                    }
-//
-//                    @Override
-//                    public void onNext(MovieEntity movieEntity) {
-//                        resultTV.setText(movieEntity.toString());
-//                    }
-//                });
-//        subscriber = new Subscriber<List<Subject>>() {
-//            @Override
-//            public void onCompleted() {
-//                Toast.makeText(MainActivity.this, "Get Top Movie Completed", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                resultTV.setText(e.getMessage());
-//            }
-//
-//            @Override
-//            public void onNext(List<Subject> movieEntity) {
-//                resultTV.setText(movieEntity.toString());
-//            }
-//        };
-//        HttpMethods.getInstance().getTopMovie(subscriber, 0, 10);
-
         HttpMethods.getInstance().getTopMovie(new ProgressSubscriber(getTopMovieOnNext, MainActivity.this), 0, 10);
     }
 }
