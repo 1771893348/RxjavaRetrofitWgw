@@ -62,66 +62,30 @@ public class HttpMethods {
      * @param start 起始位置
      * @param count 获取长度
      */
-    public void getTopMovie(Subscriber<List<Subject>> subscriber, int start, final int count){
-//        movieService.getTopMovie(start, count)
-//                .flatMap(new Func1<HttpResult<List<Subject>>, Observable<List<Subject>>>() {
-//                    @Override
-//                    public Observable<List<Subject>> call(HttpResult<List<Subject>> httpResult) {
-//                        return flatResult(httpResult);
-//                    }
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .unsubscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(subscriber);
+    public void getTopMovie(Subscriber<List<Subject>> subscriber, int start, int count){
 
         movieService.getTopMovie(start, count)
-                .compose(new HttpObservableTransformer<List<Subject>>())
+                .map(new HttpResultFunc<List<Subject>>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
     }
 
-    private class HttpObservableTransformer<T> implements Observable.Transformer<HttpResult<T>, T> {
+    /**
+     * 用来统一处理Http的resultCode,并将HttpResult的Data部分剥离出来返回给subscriber
+     *
+     * @param <T>   Subscriber真正需要的数据类型，也就是Data部分的数据类型
+     */
+    private class HttpResultFunc<T> implements Func1<HttpResult<T>, T>{
 
         @Override
-        public Observable<T> call(Observable<HttpResult<T>> httpObservable) {
-
-            return httpObservable.map(new Func1<HttpResult<T>, T>() {
-                @Override
-                public T call(HttpResult<T> httpResult) {
-                    if (httpResult.getCount() == 0) {
-                        throw new ApiException(100);
-                    }
-                    return httpResult.getSubjects();
-                }
-            })
-            .subscribeOn(Schedulers.io())
-            .unsubscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread());
+        public T call(HttpResult<T> httpResult) {
+            if (httpResult.getCount() == 0) {
+                throw new ApiException(100);
+            }
+            return httpResult.getSubjects();
         }
     }
 
-    /**
-     * 用来统一处理Http的ResultCode
-     * @param result   Http请求返回的数据，用过HttpResult进行了封装
-     * @param <T>   Subscriber真正需要的数据类型，也就是Data部分的数据类型
-     * @return
-     */
-    static <T> Observable<T> flatResult(final HttpResult<T> result) {
-        return Observable.create(new Observable.OnSubscribe<T>() {
-            @Override
-            public void call(Subscriber<? super T> subscriber) {
-
-                if (result.getCount() == 0) {
-                    subscriber.onError(new ApiException(ApiException.USER_NOT_EXIST));
-                } else{
-                    subscriber.onNext(result.getSubjects());
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
 }
