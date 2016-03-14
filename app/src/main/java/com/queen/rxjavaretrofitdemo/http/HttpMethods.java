@@ -10,9 +10,11 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.HTTP;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -60,18 +62,45 @@ public class HttpMethods {
      * @param start 起始位置
      * @param count 获取长度
      */
-    public void getTopMovie(Subscriber<List<Subject>> subscriber, int start, int count){
+    public void getTopMovie(Subscriber<List<Subject>> subscriber, int start, final int count){
+//        movieService.getTopMovie(start, count)
+//                .flatMap(new Func1<HttpResult<List<Subject>>, Observable<List<Subject>>>() {
+//                    @Override
+//                    public Observable<List<Subject>> call(HttpResult<List<Subject>> httpResult) {
+//                        return flatResult(httpResult);
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .unsubscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(subscriber);
+
         movieService.getTopMovie(start, count)
-                .flatMap(new Func1<HttpResult<List<Subject>>, Observable<List<Subject>>>() {
-                    @Override
-                    public Observable<List<Subject>> call(HttpResult<List<Subject>> httpResult) {
-                        return flatResult(httpResult);
-                    }
-                })
+                .compose(new HttpObservableTransformer<List<Subject>>())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
+    }
+
+    private class HttpObservableTransformer<T> implements Observable.Transformer<HttpResult<T>, T> {
+
+        @Override
+        public Observable<T> call(Observable<HttpResult<T>> httpObservable) {
+
+            return httpObservable.map(new Func1<HttpResult<T>, T>() {
+                @Override
+                public T call(HttpResult<T> httpResult) {
+                    if (httpResult.getCount() == 0) {
+                        throw new ApiException(100);
+                    }
+                    return httpResult.getSubjects();
+                }
+            })
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread());
+        }
     }
 
     /**
