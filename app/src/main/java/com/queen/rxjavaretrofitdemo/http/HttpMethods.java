@@ -64,12 +64,24 @@ public class HttpMethods {
      */
     public void getTopMovie(Subscriber<List<Subject>> subscriber, int start, int count){
 
-        movieService.getTopMovie(start, count)
-                .map(new HttpResultFunc<List<Subject>>())
-                .subscribeOn(Schedulers.io())
+//        movieService.getTopMovie(start, count)
+//                .map(new HttpResultFunc<List<Subject>>())
+//                .subscribeOn(Schedulers.io())
+//                .unsubscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(subscriber);
+
+        Observable observable = movieService.getTopMovie(start, count)
+                .map(new HttpResultFunc<List<Subject>>());
+
+        toSubscribe(observable, subscriber);
+    }
+
+    private <T> void toSubscribe(Observable<T> o, Subscriber<T> s){
+         o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
+                .subscribe(s);
     }
 
     /**
