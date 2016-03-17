@@ -38,7 +38,9 @@ public class HttpMethods {
 
         retrofit = new Retrofit.Builder()
                 .client(builder.build())
-                .addConverterFactory(GsonConverterFactory.create())
+                //modify by zqikai 20160317 for 对http请求结果进行统一的预处理 GosnResponseBodyConvert
+//                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ResponseConvertFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(BASE_URL)
                 .build();
